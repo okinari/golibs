@@ -130,7 +130,12 @@ func (ws *WebScraping) GetStringByID(id string) string {
 }
 
 func (ws *WebScraping) SetStringByID(id string, str string) error {
-	return ws.page.FindByID(id).Fill(str)
+	element := ws.page.FindByID(id)
+	err := element.Clear()
+	if err != nil {
+		return err
+	}
+	return element.Fill(str)
 }
 
 func (ws *WebScraping) GetValueByID(id string) *agouti.Selection {
@@ -152,11 +157,24 @@ func (ws *WebScraping) GetStringByClass(class string) string {
 }
 
 func (ws *WebScraping) SetStringByClass(class string, str string) error {
-	return ws.page.FindByClass(class).Fill(str)
+	element := ws.page.FindByClass(class)
+	err := element.Clear()
+	if err != nil {
+		return err
+	}
+	return element.Fill(str)
 }
 
 func (ws *WebScraping) GetValueByClass(class string) *agouti.Selection {
 	return ws.page.FindByClass(class)
+}
+
+func (ws *WebScraping) ClickButtonByClass(class string) error {
+	return ws.page.FindByClass(class).Click()
+}
+
+func (ws *WebScraping) SubmitButtonByClass(class string) error {
+	return ws.page.FindByClass(class).Submit()
 }
 
 // By Name
@@ -166,11 +184,24 @@ func (ws *WebScraping) GetStringByName(name string) string {
 }
 
 func (ws *WebScraping) SetStringByName(name string, str string) error {
-	return ws.page.FindByName(name).Fill(str)
+	element := ws.page.FindByName(name)
+	err := element.Clear()
+	if err != nil {
+		return err
+	}
+	return element.Fill(str)
 }
 
 func (ws *WebScraping) GetValueByName(name string) *agouti.Selection {
 	return ws.page.FindByName(name)
+}
+
+func (ws *WebScraping) ClickButtonByName(name string) error {
+	return ws.page.FindByName(name).Click()
+}
+
+func (ws *WebScraping) SubmitButtonByName(name string) error {
+	return ws.page.FindByName(name).Submit()
 }
 
 // By Text
@@ -181,6 +212,20 @@ func (ws *WebScraping) ClickButtonByText(text string) error {
 
 func (ws *WebScraping) SubmitButtonByText(text string) error {
 	return ws.page.FindByButton(text).Submit()
+}
+
+// By Selector
+
+func (ws *WebScraping) GetAllElementsBySelector(selector string) *agouti.MultiSelection {
+	return ws.page.All(selector)
+}
+
+func (ws *WebScraping) ClickButtonBySelector(selector string) error {
+	return ws.page.Find(selector).Click()
+}
+
+func (ws *WebScraping) SubmitButtonBySelector(selector string) error {
+	return ws.page.Find(selector).Submit()
 }
 
 // Execute JavaScript
