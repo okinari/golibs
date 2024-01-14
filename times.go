@@ -14,10 +14,10 @@ func WaitTimeSecond(second int) {
 }
 
 // WaitForCondition 与えた引数の関数がtrueを返すまで待つ
-func WaitForCondition(waitTimeMillSecond int, intervalMillSecond int, conditionFunc func() (bool, error)) error {
+func WaitForCondition(waitTimeMillSecond int, intervalMillSecond int, conditionFunc func(limitTimeMillSecond int) (bool, error)) error {
 	for i := waitTimeMillSecond; i > 0; i = i - intervalMillSecond {
 		WaitTimeMillSecond(intervalMillSecond)
-		is, err := conditionFunc()
+		is, err := conditionFunc(i)
 		if err != nil {
 			return err
 		}

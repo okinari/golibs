@@ -301,7 +301,7 @@ func (ws *WebScraping) ReadFile(filePath string) (*goquery.Document, error) {
 func (ws *WebScraping) WaitUntilURL(targetURL string, waitTimeMillSecond, intervalMillSecond int) error {
 
 	// URLが指定したものになっているか確認する関数
-	conditionFunction := func() (bool, error) {
+	conditionFunction := func(limitTimeMillSecond int) (bool, error) {
 		url, err := ws.page.URL()
 		if err != nil {
 			return false, err
@@ -324,7 +324,7 @@ func (ws *WebScraping) WaitUntilURL(targetURL string, waitTimeMillSecond, interv
 func (ws *WebScraping) WaitForURLChange(targetURL string, waitTimeMillSecond, intervalMillSecond int) error {
 
 	// URLが指定したもの以外であるかどうか、確認する関数
-	conditionFunction := func() (bool, error) {
+	conditionFunction := func(limitTimeMillSecond int) (bool, error) {
 		url, err := ws.page.URL()
 		if err != nil {
 			return false, err
