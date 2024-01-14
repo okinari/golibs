@@ -121,6 +121,20 @@ func (ws *WebScraping) NavigatePage(requestUrl string) error {
 	return ws.page.Navigate(requestUrl)
 }
 
+func (ws *WebScraping) NavigatePageForWait(requestUrl string, waitTimeMillSecond, intervalMillSecond int) error {
+	err := ws.page.Navigate(requestUrl)
+	if err != nil {
+		return err
+	}
+
+	err = ws.WaitUntilURL(requestUrl, waitTimeMillSecond, intervalMillSecond)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // 画面操作
 
 // By ID
@@ -282,4 +296,50 @@ func (ws *WebScraping) ReadFile(filePath string) (*goquery.Document, error) {
 	}
 
 	return doc, nil
+}
+
+func (ws *WebScraping) WaitUntilURL(targetURL string, waitTimeMillSecond, intervalMillSecond int) error {
+
+	// URLが指定したものになっているか確認する関数
+	conditionFunction := func() (bool, error) {
+		url, err := ws.page.URL()
+		if err != nil {
+			return false, err
+		}
+		if url == targetURL {
+			return true, nil
+		}
+		return false, nil
+	}
+
+	// 条件通り、待つ
+	err := WaitForCondition(waitTimeMillSecond, intervalMillSecond, conditionFunction)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ws *WebScraping) WaitForURLChange(targetURL string, waitTimeMillSecond, intervalMillSecond int) error {
+
+	// URLが指定したもの以外であるかどうか、確認する関数
+	conditionFunction := func() (bool, error) {
+		url, err := ws.page.URL()
+		if err != nil {
+			return false, err
+		}
+		if url != targetURL {
+			return true, nil
+		}
+		return false, nil
+	}
+
+	// 条件通り、待つ
+	err := WaitForCondition(waitTimeMillSecond, intervalMillSecond, conditionFunction)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
